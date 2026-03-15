@@ -1,5 +1,5 @@
 torch
-flash-attn
+flash-attn-4
 adam-atan2
 einops
 tqdm

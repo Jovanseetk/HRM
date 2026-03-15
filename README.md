@@ -19,32 +19,31 @@ Ensure the latest stable PyTorch and FlexAttention (FlashAttention 4) are instal
 
 ```bash
 # Install CUDA 12.8 (recommended for latest stable PyTorch wheels)
-CUDA_URL=https://developer.download.nvidia.com/compute/cuda/12.8.1/local_installers/cuda_12.8.1_570.124.06_linux.run
-
+CUDA_URL=https://developer.download.nvidia.com/compute/cuda/13.2.0/local_installers/cuda_13.2.0_595.45.04_linux.run
 wget -q --show-progress --progress=bar:force:noscroll -O cuda_installer.run $CUDA_URL
 sudo sh cuda_installer.run --silent --toolkit --override
 
-export CUDA_HOME=/usr/local/cuda-12.8
+export CUDA_HOME=/usr/local/cuda-13.2
 
-# Install latest stable PyTorch with CUDA 12.8
-PYTORCH_INDEX_URL=https://download.pytorch.org/whl/cu128
+# Install latest stable PyTorch with CUDA 13.2
+PYTORCH_INDEX_URL=https://download.pytorch.org/whl/cu130
 
-pip3 install --upgrade torch torchvision torchaudio --index-url $PYTORCH_INDEX_URL
+uv add torch torchvision torchaudio --default-index $PYTORCH_INDEX_URL
 
 # Additional packages for building extensions
-pip3 install packaging ninja wheel setuptools setuptools-scm
+uv add packaging ninja wheel setuptools setuptools-scm
 ```
 
 Then install the latest FlashAttention release (FlashAttention-4 / FlexAttention support):
 
 ```bash
-pip3 install --upgrade flash-attn
+uv add flash-attn-4
 ```
 
 ## Install Python Dependencies 🐍
 
 ```bash
-pip install -r requirements.txt
+uv pip install -r requirements.txt
 ```
 
 ## W&B Integration 📈
@@ -63,10 +62,10 @@ Train a master-level Sudoku AI capable of solving extremely difficult puzzles on
 
 ```bash
 # Download and build Sudoku dataset
-python dataset/build_sudoku_dataset.py --output-dir data/sudoku-extreme-1k-aug-1000  --subsample-size 1000 --num-aug 1000
+uv run dataset/build_sudoku_dataset.py --output-dir data/sudoku-extreme-1k-aug-1000  --subsample-size 1000 --num-aug 1000
 
 # Start training (single GPU, smaller batch size)
-OMP_NUM_THREADS=8 python pretrain.py data_path=data/sudoku-extreme-1k-aug-1000 epochs=20000 eval_interval=2000 global_batch_size=384 lr=7e-5 puzzle_emb_lr=7e-5 weight_decay=1.0 puzzle_emb_weight_decay=1.0
+OMP_NUM_THREADS=8 uv run pretrain.py data_path=data/sudoku-extreme-1k-aug-1000 epochs=20000 eval_interval=2000 global_batch_size=384 lr=7e-5 puzzle_emb_lr=7e-5 weight_decay=1.0 puzzle_emb_weight_decay=1.0
 ```
 
 Runtime: ~10 hours on a RTX 4070 laptop GPU
@@ -90,13 +89,13 @@ Experiments below assume an 8-GPU setup.
 git submodule update --init --recursive
 
 # ARC-1
-python dataset/build_arc_dataset.py  # ARC offical + ConceptARC, 960 examples
+uv run dataset/build_arc_dataset.py  # ARC offical + ConceptARC, 960 examples
 # ARC-2
-python dataset/build_arc_dataset.py --dataset-dirs dataset/raw-data/ARC-AGI-2/data --output-dir data/arc-2-aug-1000  # ARC-2 official, 1120 examples
+uv run dataset/build_arc_dataset.py --dataset-dirs dataset/raw-data/ARC-AGI-2/data --output-dir data/arc-2-aug-1000  # ARC-2 official, 1120 examples
 
 # Sudoku-Extreme
-python dataset/build_sudoku_dataset.py  # Full version
-python dataset/build_sudoku_dataset.py --output-dir data/sudoku-extreme-1k-aug-1000  --subsample-size 1000 --num-aug 1000  # 1000 examples
+uv run dataset/build_sudoku_dataset.py  # Full version
+uv run dataset/build_sudoku_dataset.py --output-dir data/sudoku-extreme-1k-aug-1000  --subsample-size 1000 --num-aug 1000  # 1000 examples
 
 # Maze
 python dataset/build_maze_dataset.py  # 1000 examples
