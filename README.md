@@ -15,7 +15,7 @@ These results underscore HRM’s potential as a transformative advancement towar
 
 ### Prerequisites ⚙️
 
-Ensure PyTorch and CUDA are installed. The repo needs CUDA extensions to be built. If not present, run the following commands:
+Ensure the latest stable PyTorch and FlexAttention (FlashAttention 4) are installed. The repo needs CUDA extensions to be built. If not present, run the following commands:
 
 ```bash
 # Install CUDA 12.8 (recommended for latest stable PyTorch wheels)
