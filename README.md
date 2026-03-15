@@ -18,35 +18,27 @@ These results underscore HRM’s potential as a transformative advancement towar
 Ensure PyTorch and CUDA are installed. The repo needs CUDA extensions to be built. If not present, run the following commands:
 
 ```bash
-# Install CUDA 12.6
-CUDA_URL=https://developer.download.nvidia.com/compute/cuda/12.6.3/local_installers/cuda_12.6.3_560.35.05_linux.run
+# Install CUDA 12.8 (recommended for latest stable PyTorch wheels)
+CUDA_URL=https://developer.download.nvidia.com/compute/cuda/12.8.1/local_installers/cuda_12.8.1_570.124.06_linux.run
 
 wget -q --show-progress --progress=bar:force:noscroll -O cuda_installer.run $CUDA_URL
 sudo sh cuda_installer.run --silent --toolkit --override
 
-export CUDA_HOME=/usr/local/cuda-12.6
+export CUDA_HOME=/usr/local/cuda-12.8
 
-# Install PyTorch with CUDA 12.6
-PYTORCH_INDEX_URL=https://download.pytorch.org/whl/cu126
+# Install latest stable PyTorch with CUDA 12.8
+PYTORCH_INDEX_URL=https://download.pytorch.org/whl/cu128
 
-pip3 install torch torchvision torchaudio --index-url $PYTORCH_INDEX_URL
+pip3 install --upgrade torch torchvision torchaudio --index-url $PYTORCH_INDEX_URL
 
 # Additional packages for building extensions
 pip3 install packaging ninja wheel setuptools setuptools-scm
 ```
 
-Then install FlashAttention. For Hopper GPUs, install FlashAttention 3
+Then install the latest FlashAttention release (FlashAttention-4 / FlexAttention support):
 
 ```bash
-git clone git@github.com:Dao-AILab/flash-attention.git
-cd flash-attention/hopper
-python setup.py install
-```
-
-For Ampere or earlier GPUs, install FlashAttention 2
-
-```bash
-pip3 install flash-attn
+pip3 install --upgrade flash-attn
 ```
 
 ## Install Python Dependencies 🐍
