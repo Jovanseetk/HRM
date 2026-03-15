@@ -1,5 +1,5 @@
-torch==2.10.0
-flash-attn>=4.0.0
+torch
+flash-attn
 adam-atan2
 einops
 tqdm

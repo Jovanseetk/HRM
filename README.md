@@ -18,7 +18,7 @@ These results underscore HRM’s potential as a transformative advancement towar
 Ensure the latest stable PyTorch and FlexAttention (FlashAttention 4) are installed. The repo needs CUDA extensions to be built. If not present, run the following commands:
 
 ```bash
-# Install CUDA 12.8
+# Install CUDA 12.8 (recommended for latest stable PyTorch wheels)
 CUDA_URL=https://developer.download.nvidia.com/compute/cuda/12.8.1/local_installers/cuda_12.8.1_570.124.06_linux.run
 
 wget -q --show-progress --progress=bar:force:noscroll -O cuda_installer.run $CUDA_URL
@@ -29,16 +29,16 @@ export CUDA_HOME=/usr/local/cuda-12.8
 # Install latest stable PyTorch with CUDA 12.8
 PYTORCH_INDEX_URL=https://download.pytorch.org/whl/cu128
 
-pip3 install torch==2.10.0 torchvision torchaudio --index-url $PYTORCH_INDEX_URL
+pip3 install --upgrade torch torchvision torchaudio --index-url $PYTORCH_INDEX_URL
 
 # Additional packages for building extensions
 pip3 install packaging ninja wheel setuptools setuptools-scm
 ```
 
-Then install FlexAttention (FlashAttention 4):
+Then install the latest FlashAttention release (FlashAttention-4 / FlexAttention support):
 
 ```bash
-pip3 install "flash-attn>=4.0.0"
+pip3 install --upgrade flash-attn
 ```
 
 ## Install Python Dependencies 🐍
