@@ -4,11 +4,30 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 
+def _sdpa_flash_attn_func(q, k, v, causal=False, **kwargs):
+    """Thin wrapper around F.scaled_dot_product_attention with fa-style [b,s,h,d] layout."""
+    # F.sdpa expects [b, h, s, d]
+    q = q.transpose(1, 2)
+    k = k.transpose(1, 2)
+    v = v.transpose(1, 2)
+    out = F.scaled_dot_product_attention(q, k, v, is_causal=causal)
+    return out.transpose(1, 2)
+
 try:
     from flash_attn_interface import flash_attn_func  # type: ignore[import]
 except ImportError:
-    # Fallback to flash-attn Python package (FlashAttention 2/3/4)
-    from flash_attn import flash_attn_func  # type: ignore[import]
+    try:
+        import torch
+        _cap = torch.cuda.get_device_capability() if torch.cuda.is_available() else (0, 0)
+        _arch = _cap[0] * 10 + _cap[1]
+        if _arch // 10 not in [9, 10, 11]:
+            raise ImportError("flash_attn4 does not support this compute capability")
+        from flash_attn.cute import flash_attn_func  # type: ignore[import]  # FlashAttention 4
+    except ImportError:
+        try:
+            from flash_attn import flash_attn_func  # type: ignore[import]  # FlashAttention 2/3
+        except ImportError:
+            flash_attn_func = _sdpa_flash_attn_func  # type: ignore[assignment]
 
 from models.common import trunc_normal_init_
 
